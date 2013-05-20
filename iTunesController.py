@@ -32,6 +32,9 @@ def getPlaylists():
 	if (not isOpen()):
 		return [];
 	return {p.name():p for p in app('iTunes').playlists()}
+	
+def pause():
+	app('iTunes').pause()
 
 def playPlaylist(p):
 	re_str = 'app\(\'/.*?/iTunes.app\'\).sources.ID\([0-9]*?\).user_playlists.ID\([0-9]*?\)'

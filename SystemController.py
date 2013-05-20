@@ -14,12 +14,13 @@ THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
 IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 """
-from appscript import *
 import time
+import subprocess
+import iTunesController
 
 def sleep(delay=0):
 	"""Waits for the number of seconds specified by delay, then sleeps the system."""
 	if (delay != 0):
 		time.sleep(delay)
-	finder = app('Finder')
-	finder.sleep()
+	iTunesController.pause()
+	subprocess.call(['osascript','-e','tell app "Finder" to sleep'])

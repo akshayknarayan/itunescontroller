@@ -58,10 +58,10 @@ class Handler(BaseHTTPRequestHandler):
 			iTunesController.playPlaylist(iTunesController.getPlaylists()[tokenized['play']])
 			self.sendResult('OK')
 		if ('sleep' in argKeys):
-			delay = tokenized['sleep']
+			delay = int(tokenized['sleep'])
 			if (delay > 0):
 				self.sendResult('OK')
-				SystemController.sleep(delay)
+				SystemController.sleep(int(delay))
 			else:
 				self.sendResult('time to sleep must be a positive integer (in seconds)')
 			
@@ -75,7 +75,7 @@ class Handler(BaseHTTPRequestHandler):
 		return
 
 def run(server_class=HTTPServer, handler_class=Handler):
-	server_address = ('localhost', 8000)
+	server_address = ('', 8000)
 	httpd = server_class(server_address, handler_class)
 	gen_AuthKey()
 	print('starting. Your auth key for this session is \''+AUTH_KEY+'\'.')
