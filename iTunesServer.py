@@ -52,10 +52,15 @@ class Handler(BaseHTTPRequestHandler):
 			self.sendResult('wrong auth key')
 			return
 		if ('playlists' in argKeys):
-			self.sendResult(str(list(iTunesController.getPlaylists().keys())))
+			playlist = list(iTunesController.getPlaylists().keys())
+			playlist = [x.replace(' ','-') for x in playlist]
+			self.sendResult(str(playlist))
 			return
 		elif ('play' in argKeys):
-			iTunesController.playPlaylist(iTunesController.getPlaylists()[tokenized['play']])
+			iTunesController.playPlaylist(iTunesController.getPlaylists()[tokenized['play'].replace('-',' ')])
+			self.sendResult('OK')
+		elif ('pause' in argKeys):
+			iTunesController.pause()
 			self.sendResult('OK')
 		if ('sleep' in argKeys):
 			delay = int(tokenized['sleep'])
