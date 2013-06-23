@@ -16,6 +16,7 @@ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 """
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib import parse
 import iTunesController
 import SystemController
 import re
@@ -28,27 +29,58 @@ class Handler(BaseHTTPRequestHandler):
 	def do_GET(self):
 		global AUTH_KEY
 		#print('GET', self.path)
-		self.send_response(200)
-		self.send_header("Content-type", "text/plain")
-		self.end_headers()
 		
 		if (not iTunesController.isOpen()):
 			iTunesController.open()
 		
 		returnVal = ''
-		if (not (self.path[0:2] == '/?')):
+		parsed = parse.urlparse('http://localhost:8000'+self.path);
+		if (parsed.path == '/'):
+			self.send_response(200)
+			self.send_header("Content-type", "text/html")
+			self.end_headers()
+			page = open('./site/index.html')
+			self.wfile.write(page.read().encode('utf-8'))
+			page.close()
+			return
+		elif (parsed.path.startswith('/site')):
+			self.send_response(200)
+			if (parsed.path.endswith('css')):
+				self.send_header("Content-type", "text/css")
+			elif (parsed.path.endswith('js')):
+				self.send_header("Content-type", "application/javascript")
+			elif (parsed.path.endswith('jpg')):
+				self.send_header("Content-type", "image/jpeg")
+				self.end_headers()
+				page = open('.'+parsed.path, 'rb')
+				self.wfile.write(page.read())
+				page.close()
+				return
+			else:
+				self.send_header("Content-type", "text/plain")
+			self.end_headers()
+			page = open('.'+parsed.path)
+			self.wfile.write(page.read().encode('utf-8'))
+			page.close()
+			return
+		elif (parsed.path == '/app'):
+			self.send_response(200)
+			self.send_header("Content-type", "text/plain")
+			self.end_headers()
+		else:
+			self.send_response(400)
+			self.send_header("Content-type", "text/plain")
+			self.end_headers()
 			self.sendResult('invalid query')
 			return
-		
-		#print(self.path)
-		#print(self.tokenize_Path())
-		
-		tokenized = self.tokenize_Path()
+				
+		tokenized = parse.parse_qs(parsed.query, True)
 		argKeys = tokenized.keys()
 		if ('auth' not in argKeys):
 			self.sendResult('need auth key')
 			return
-		elif (tokenized['auth'] != AUTH_KEY):
+		elif (tokenized['auth'][0].upper() != AUTH_KEY):
+			print(tokenized['auth'][0].upper()+" vs. "+AUTH_KEY)
 			self.sendResult('wrong auth key')
 			return
 		if ('playlists' in argKeys):
@@ -57,7 +89,7 @@ class Handler(BaseHTTPRequestHandler):
 			self.sendResult(str(playlist))
 			return
 		elif ('play' in argKeys):
-			iTunesController.playPlaylist(iTunesController.getPlaylists()[tokenized['play'].replace('-',' ')])
+			iTunesController.playPlaylist(iTunesController.getPlaylists()[tokenized['play'][0].replace('-',' ')])
 			self.sendResult('OK')
 		elif ('pause' in argKeys):
 			iTunesController.pause()
@@ -69,11 +101,6 @@ class Handler(BaseHTTPRequestHandler):
 				SystemController.sleep(int(delay))
 			else:
 				self.sendResult('time to sleep must be a positive integer (in seconds)')
-			
-	def tokenize_Path(self):
-		splitPath = re.split('&',self.path[2:])
-		path_tokenized_list = [re.split('=',kv) if '=' in kv else [kv,None] for kv in splitPath]
-		return {kv[0]:kv[1] for kv in path_tokenized_list}
 	
 	def sendResult(self, returnVal):
 		self.wfile.write((returnVal+'\n').encode('utf-8'))

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>iTunes Controller</title>
+	<link href="./site/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<!--#4a525a
+		#3F464D-->
+	<style>
+		html {
+			min-height:100%;
+		}
+		body {
+			margin: 0;
+			/*
+			Textured background from the CSS3 Patterns Gallery: http://lea.verou.me/css3patterns/#
+			*/
+			background:
+			linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
+			linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
+			linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
+			linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,
+			linear-gradient(90deg, #1b1b1b 10px, transparent 10px),
+			linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
+			background-color: #131313;
+			background-size: 20px 20px;
+			color: rgb(241,241,241);
+			font: 13px/18px "Verdana","Helvetica Neue", Helvetica, Arial, sans-serif;
+			text-align:center;
+ 		}
+ 		h1,h2 {
+ 			font-weight: normal;
+ 		}
+ 		input {
+ 			text-align:center;
+ 		}
+ 		select {
+ 			text-align:center;
+ 			width:400px;
+ 		}
+	</style>
+</head>
+<body>
+	<div class="container-fluid" id="auth-panel">
+		<div class="row-fluid" style="margin-top:200px;margin-bottom=200px">
+			<div class="span12">
+			  <h1>Enter Auth Key</h1>
+			  <input class="input-mini" type="text" maxlength="1" id="auth1">
+			  <input class="input-mini" type="text" maxlength="1" id="auth2">
+			  <input class="input-mini" type="text" maxlength="1" id="auth3">
+			  <input class="input-mini" type="text" maxlength="1" id="auth4">
+			  <input class="input-mini" type="text" maxlength="1" id="auth5">
+			  <input class="input-mini" type="text" maxlength="1" id="auth6">
+			</div>
+		</div>
+		<div class="row-fluid">
+			<button class="btn">Go!</button>
+		</div>
+	</div>
+	<div class="container-fluid" id="control-panel" style="display:none;margin-top:100px;margin-bottom:200px">
+		<div class="alert alert-info" style="display:none;width=400px">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			You need to select a playlist to play!
+		</div>
+		<div class="row-fluid" style="margin-top:20px;margin-bottom:20px">
+			<button class="btn btn-large btn-success" id="play">Play</button>
+			<button class="btn btn-large btn-danger" id="pause" style="display:none">Pause</button>
+		</div>
+		<select multiple="multiple">
+			<!--playlists here-->
+		</select>
+	</div>
+
+	<script type="application/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script type="application/javascript" src="./site/js/main.js"></script>
+</body>
+</html>
